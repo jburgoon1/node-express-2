@@ -78,6 +78,14 @@ router.patch('/:username', authUser, requireLogin, requireAdmin, async function(
     delete fields._token;
 
     let user = await User.update(req.params.username, fields);
+    //bug fix #2 was returning all information 
+    user.map(() =>{
+      username,
+      first_name,
+      last_name,
+      email,
+      phone
+    })
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -100,7 +108,8 @@ router.delete('/:username', authUser, requireAdmin, async function(
   next
 ) {
   try {
-    User.delete(req.params.username);
+    ///bug fix #3 needed to add the await
+    await User.delete(req.params.username);
     return res.json({ message: 'deleted' });
   } catch (err) {
     return next(err);
